@@ -73,9 +73,9 @@ def developer(desarrollador: str):
 def best_developer_year(year: str):
     try:
         df_games = pd.read_csv(
-            "datasets/df_steam_games_clean.csv", columns=['release_date', 'id', 'developer'])
+            "datasets/df_steam_games_clean.csv", usecols=['release_date', 'id', 'developer'])
         df_user_reviews = pd.read_csv(
-            "datasets/df_user_reviews_clean.csv", columns=['user_id', 'item_id', 'recommend'])
+            "datasets/df_user_reviews_clean.csv", usecols=['user_id', 'item_id', 'recommend'])
     except FileNotFoundError:
         return {"error": "Data files not found"}
 
