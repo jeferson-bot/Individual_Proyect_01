@@ -1,19 +1,8 @@
 from fastapi import FastAPI
 import pandas as pd
-# from services import developer_service
-# from services import router as routes_router
-# import sys
-# sys.path.insert(0, '.\app\services')
 
 
 app = FastAPI()
-
-# app.include_router(routes_router)
-
-
-# @app.get("/")
-# def read_root():
-#     return {"Hello": "World"}
 
 
 @app.get("/function/{desarrollador}")
@@ -53,12 +42,63 @@ def developer(desarrollador: str):
             df_result.loc[df_result["Año"] == year, "Contenido free"] = "0%"
 
     return df_result.to_dict("list")
-# def get_developer_info(desarrollador: str):
-#     return developer_service.developer(desarrollador)
 
 
-# print(developer("Valve"))
+# @app.get("/best_developers/{year}")
+# def best_developer_year(year: str):
 
-# if __name__ == "__main__":
-#     import uvicorn
-#     uvicorn.run(app, host="0.0.0.0", port=8000)
+# df_games = pd.read_csv("datasets/df_steam_games_clean.csv", columns=['release_date', 'id', 'developer'])
+# df_user_reviews = pd.read_csv("datasets/df_user_reviews_clean.csv", columns=['user_id', 'item_id', 'recommend'])
+
+# df = df_user_reviews.merge(df_games, left_on='item_id', right_on='id', how='inner')
+# df = df[(df['release_date'] == year) & df['recommend']]
+# top_developers = df.groupby('developer').size()
+
+# # Check for errors
+# if len(top_developers) < 3:
+#     return {"error": f"Less than 3 developers published games in the year {year}."}
+# if df.empty:
+#     return {"error": f"No reviews found for the year {year}."}
+
+# # Get top three developers
+# top_developers = top_developers.nlargest(3).reset_index()
+
+# # Create a list of dictionaries
+# top_3 = [{f'Position {i+1}': dev} for i, dev in enumerate(top_developers['developer'])]
+
+# return top_3
+
+
+@app.get("/best_developers/{year}")
+def best_developer_year(year: str):
+    try:
+        df_games = pd.read_csv(
+            "datasets/df_steam_games_clean.csv", columns=['release_date', 'id', 'developer'])
+        df_user_reviews = pd.read_csv(
+            "datasets/df_user_reviews_clean.csv", columns=['user_id', 'item_id', 'recommend'])
+    except FileNotFoundError:
+        return {"error": "Data files not found"}
+
+    # Validate year
+    if not year.isdigit() or int(year) < 1900 or int(year) > 2100:
+        return {"error": "Invalid year"}
+
+    df = df_user_reviews.merge(
+        df_games, left_on='item_id', right_on='id', how='inner')
+    df = df[(df['release_date'] == year) & df['recommend']]
+    top_developers = df.groupby('developer').size()
+
+    # Check for errors
+    if len(top_developers) < 3:
+        return {"error": f"Less than 3 developers published games in the year {year}."}
+    if df.empty:
+        return {"error": f"No reviews found for the year {year}."}
+
+    # Get top three developers
+    top_developers = top_developers.nlargest(3).reset_index()
+
+    # Create a list of dictionaries
+    top_3 = [{f'Position {i+1}': dev}
+             for i, dev in enumerate(top_developers['developer'])]
+
+    return top_3.to_dict("list")
