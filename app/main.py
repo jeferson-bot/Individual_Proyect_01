@@ -44,31 +44,6 @@ def developer(desarrollador: str):
     return df_result.to_dict("list")
 
 
-# @app.get("/best_developers/{year}")
-# def best_developer_year(year: str):
-
-# df_games = pd.read_csv("datasets/df_steam_games_clean.csv", columns=['release_date', 'id', 'developer'])
-# df_user_reviews = pd.read_csv("datasets/df_user_reviews_clean.csv", columns=['user_id', 'item_id', 'recommend'])
-
-# df = df_user_reviews.merge(df_games, left_on='item_id', right_on='id', how='inner')
-# df = df[(df['release_date'] == year) & df['recommend']]
-# top_developers = df.groupby('developer').size()
-
-# # Check for errors
-# if len(top_developers) < 3:
-#     return {"error": f"Less than 3 developers published games in the year {year}."}
-# if df.empty:
-#     return {"error": f"No reviews found for the year {year}."}
-
-# # Get top three developers
-# top_developers = top_developers.nlargest(3).reset_index()
-
-# # Create a list of dictionaries
-# top_3 = [{f'Position {i+1}': dev} for i, dev in enumerate(top_developers['developer'])]
-
-# return top_3
-
-
 @app.get("/best_developers/{year}")
 def best_developer_year(year: int):
     try:
@@ -103,3 +78,50 @@ def best_developer_year(year: int):
              for i, dev in enumerate(top_developers['developer'])]
 
     return top_3
+
+
+# @app.get("/developer_reviews_analysis/{developer_name}")
+# def developer_reviews_analysis(developer_name: str):
+#     # Read only the necessary columns from the dataframes
+#     df_games = pd.read_csv('datasets/df_steam_games_clean.csv', usecols=['id', 'developer'])
+#     df_user_reviews = pd.read_csv('datasets/df_user_reviews_clean.csv', usecols=['item_id', 'sentiment_analysis'])
+
+#     # Merge the two dataframes on item_id
+#     merged_df = pd.merge(df_user_reviews, df_games, left_on='item_id', right_on='id')
+
+#     # Filter the dataframe to only include rows for the specified developer
+#     dev_df = merged_df[merged_df['developer'].str.lower() == developer_name.lower()]
+
+#     # If the developer does not exist in the dataframe, return an error message
+#     if dev_df.empty:
+#         return {"error": f"No data found for the developer {developer_name}."}
+
+#     # Get the count of each sentiment score
+#     sentiment_counts = dev_df['sentiment_score'].value_counts().to_dict()
+
+#     # Return a dictionary with the developer name as the key and the sentiment counts as the value
+#     return {developer_name: sentiment_counts}
+
+
+@app.get("/developer_reviews_analysis/{developer_name}")
+def developer_reviews_analysis(developer_name: str):
+    try:
+        # Read only the necessary columns from the dataframes
+        df_games = pd.read_csv(
+            'datasets/df_steam_games_clean.csv', usecols=['id', 'developer'])
+        df_user_reviews = pd.read_csv(
+            'datasets/df_user_reviews_clean.csv', usecols=['item_id', 'sentiment_analysis'])
+    except FileNotFoundError:
+        return {"error": "Data files not found"}
+
+    # Merge the two dataframes on item_id and filter to only include rows for the specified developer
+    dev_df = pd.merge(df_user_reviews, df_games,
+                      left_on='item_id', right_on='id')
+    dev_df = dev_df[dev_df['developer'].str.lower() == developer_name.lower()]
+
+    # If the developer does not exist in the dataframe, return an error message
+    if dev_df.empty:
+        return {"error": f"No data found for the developer {developer_name}."}
+
+    # Get the count of each sentiment score and return a dictionary with the developer name as the key and the sentiment counts as the value
+    return {developer_name: dev_df['sentiment_score'].value_counts().to_dict()}
