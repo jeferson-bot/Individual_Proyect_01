@@ -110,7 +110,7 @@ def developer_reviews_analysis(developer_name: str):
         df_games = pd.read_csv(
             'datasets/df_steam_games_clean.csv', usecols=['id', 'developer'])
         df_user_reviews = pd.read_csv(
-            'datasets/df_user_reviews_clean.csv', usecols=['item_id', 'sentiment_analysis'])
+            'datasets/df_user_reviews_clean.csv', usecols=['item_id', 'recommend'])
     except FileNotFoundError:
         return {"error": "Data files not found"}
 
@@ -124,4 +124,4 @@ def developer_reviews_analysis(developer_name: str):
         return {"error": f"No data found for the developer {developer_name}."}
 
     # Get the count of each sentiment score and return a dictionary with the developer name as the key and the sentiment counts as the value
-    return {developer_name: dev_df['sentiment_analysis'].value_counts().to_dict()}
+    return {developer_name: dev_df['recommend'].value_counts().to_dict()}
