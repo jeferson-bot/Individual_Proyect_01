@@ -19,7 +19,7 @@ app = FastAPI()
 @app.get("/function/{desarrollador}")
 def developer(desarrollador: str):
 
-    df_steam_games_clean = pd.read_csv('datasets\df_steam_games_clean.csv', usecols=[
+    df_steam_games_clean = pd.read_csv('../datasets/df_steam_games_clean.csv', usecols=[
                                        "release_date", "developer", "price"])
 
     df_games_developer = df_steam_games_clean[(
