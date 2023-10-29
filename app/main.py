@@ -123,5 +123,9 @@ def developer_reviews_analysis(developer_name: str):
     if dev_df.empty:
         return {"error": f"No data found for the developer {developer_name}."}
 
+        # Replace 'true' with 'positive' and 'false' with 'negative'
+    dev_df['sentiment_analysis'] = dev_df['sentiment_analysis'].replace(
+        {'True': 'positive', 'false': 'Negative'})
+
     # Get the count of each sentiment score and return a dictionary with the developer name as the key and the sentiment counts as the value
     return {developer_name: dev_df['recommend'].value_counts().to_dict()}
