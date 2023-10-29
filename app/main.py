@@ -70,7 +70,7 @@ def developer(desarrollador: str):
 
 
 @app.get("/best_developers/{year}")
-def best_developer_year(year: str):
+def best_developer_year(year: int):
     try:
         df_games = pd.read_csv(
             "datasets/df_steam_games_clean.csv", usecols=['release_date', 'id', 'developer'])
