@@ -102,4 +102,4 @@ def best_developer_year(year: int):
     top_3 = [{f'Position {i+1}': dev}
              for i, dev in enumerate(top_developers['developer'])]
 
-    return top_3.to_dict("list")
+    return top_3
