@@ -80,7 +80,8 @@ def best_developer_year(year: int):
         return {"error": "Data files not found"}
 
     # Validate year
-    if not year.isdigit() or int(year) < 1900 or int(year) > 2100:
+    # if not year.isdigit() or int(year) < 1900 or int(year) > 2100:
+    if year < 1900 or year > 2100:
         return {"error": "Invalid year"}
 
     df = df_user_reviews.merge(
