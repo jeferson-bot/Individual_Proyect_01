@@ -123,7 +123,7 @@ def recomendacion_usuario(user_id: str):
     # Obtener todos los juegos posibles
     todos_los_juegos = df_user_reviews['item_id'].unique()
 
-    with open('model_recomendation/model_fit.pkl', 'rb') as file:
+    with open('model_recomendation/modelo_entrenado.pkl', 'rb') as file:
         model = pickle.load(file)
 
     # Obtener las predicciones para cada juego que el usuario no ha calificado
