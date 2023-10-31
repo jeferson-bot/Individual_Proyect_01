@@ -135,4 +135,7 @@ def recomendacion_usuario(user_id: str):
         predicciones, key=lambda x: x.est, reverse=True)
 
     # Devolver los 5 juegos recomendados
-    return [pred.iid for pred in predicciones_ordenadas[:5]]
+    respuesta = []
+    for pred in predicciones_ordenadas[:5]:
+        respuesta.append(pred.iid)
+    return {f"recomendaciones para {user_id}": respuesta}
