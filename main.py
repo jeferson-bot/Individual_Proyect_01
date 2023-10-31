@@ -141,6 +141,6 @@ def recomendacion_usuario(user_id: str):
 
     for i, juego in enumerate(respuesta, start=1):
         opcion = f"opcion{i}"
-        diccionario[opcion] = juego
+        diccionario[opcion] = str(juego)
 
     return diccionario
