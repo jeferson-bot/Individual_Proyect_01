@@ -110,7 +110,7 @@ def developer_reviews_analysis(developer_name: str):
 
 
 
-with open('model_recomendation/modelo_entrenado_jefferson (1).pkl', 'rb') as file:
+with open('\model_recomendation\model_fit.pkl', 'rb') as file:
   model = pickle.load(file)
 
 @app.get("/recomendacion_usuario/{user_id}")
