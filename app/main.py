@@ -109,7 +109,7 @@ def developer_reviews_analysis(developer_name: str):
     return {developer_name: dev_df['recommend'].value_counts().to_dict()}
 
 
-with open('/model_recomendation/model_fit.pkl', 'rb') as file:
+with open('model_recomendation/model_fit.pkl', 'rb') as file:
     model = pickle.load(file)
 
 
