@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import pandas as pd
 import pickle
-
+import surprise
 
 app = FastAPI()
 
@@ -109,10 +109,6 @@ def developer_reviews_analysis(developer_name: str):
     return {developer_name: dev_df['recommend'].value_counts().to_dict()}
 
 
-with open('model_recomendation/model_fit.pkl', 'rb') as file:
-    model = pickle.load(file)
-
-
 @app.get("/recomendacion_usuario/{user_id}")
 def recomendacion_usuario(user_id: str):
     try:
@@ -126,6 +122,9 @@ def recomendacion_usuario(user_id: str):
 
     # Obtener todos los juegos posibles
     todos_los_juegos = df_user_reviews['item_id'].unique()
+
+    with open('model_recomendation/model_fit.pkl', 'rb') as file:
+        model = pickle.load(file)
 
     # Obtener las predicciones para cada juego que el usuario no ha calificado
     predicciones = [model.predict(
