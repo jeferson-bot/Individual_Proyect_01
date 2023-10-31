@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 import pandas as pd
+import pickle
 
 
 app = FastAPI()
@@ -108,11 +109,16 @@ def developer_reviews_analysis(developer_name: str):
     return {developer_name: dev_df['recommend'].value_counts().to_dict()}
 
 
+
+with open('model_recomendation/modelo_entrenado_jefferson (1).pkl', 'rb') as file:
+  model = pickle.load(file)
+
 @app.get("/recomendacion_usuario/{user_id}")
 def recomendacion_usuario(user_id: str):
     try:
         df_user_reviews = pd.read_csv('model_recomendation\user_reviews_ur.csv')
-        
+    except FileNotFoundError:
+        return {"error": "Data files not found"}   
     # Obtener todos los juegos que el usuario ha calificado
     juegos_usuario = df_user_reviews[df_user_reviews['user_id']
                                      == user_id]['item_id'].values
